@@ -1,19 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES6", // Define a versão do JavaScript emitido
-    "module": "CommonJS", // Define o sistema de módulos como CommonJS (compatível com Node.js)
-    "outDir": "dist", // Pasta de saída dos arquivos compilados
-    "rootDir": "src", // Define a pasta raiz do projeto TypeScript
-    "strict": true, // Ativa todas as verificações estritas de tipagem
-    "esModuleInterop": true, // Facilita a importação de módulos CommonJS e ES Modules
-    "forceConsistentCasingInFileNames": true, // Evita problemas de diferenciação entre maiúsculas e minúsculas nos imports
-    "skipLibCheck": true // Ignora a verificação de tipos em bibliotecas de terceiros para acelerar a compilação
+    "target": "ES2021",
+    "module": "CommonJS",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": [
-    "src"
-  ], // Define que apenas a pasta "src" será incluída na compilação
+    "src/**/*.ts"
+  ],
   "exclude": [
-    "node_modules",
-    "dist"
-  ] // Exclui a pasta de dependências e a saída compilada
+    "node_modules"
+  ]
 }

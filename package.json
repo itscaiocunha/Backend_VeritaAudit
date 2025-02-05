@@ -4,10 +4,9 @@
   "description": "Backend para o projeto Verita Audit",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "ts-node index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "ts-node-dev src/index.ts"
   },
   "keywords": [],
   "author": "",
