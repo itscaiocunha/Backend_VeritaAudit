@@ -55,7 +55,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     return res.json({ token, user: { id: user.id, email: user.email } });
   } catch (err) {
     console.error("Erro no login:", err);
-    return res.status(500).json({ message: "Erro no servidor" });
+    return res.status(500).json({ message: "Erro no servidor:", err });
   }
 };
 
