@@ -25,7 +25,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     const result = await pool
       .request()
       .input("email", email)
-      .query("SELECT id, Email1 AS email, senha FROM VeritaAudit_Usuarios WHERE Email1 = @email");
+      .query("SELECT id, Email1 AS email, senha FROM Usuarios WHERE Email1 = @email");
 
     if (!result.recordset.length) {
       return res.status(404).json({ message: "Usuário não encontrado" });
@@ -78,7 +78,7 @@ export const registro = async (req: Request, res: Response): Promise<Response> =
     const result = await pool
       .request()
       .input("cpf", cpf)
-      .query("SELECT * FROM VeritaAudit_Usuarios WHERE cpf = @cpf");
+      .query("SELECT * FROM Usuarios WHERE cpf = @cpf");
 
     if (result.recordset.length > 0) {
       return res.status(409).json({ message: "Usuário já cadastrado" });
@@ -97,7 +97,7 @@ export const registro = async (req: Request, res: Response): Promise<Response> =
       .input("email2", email2)
       .input("password", hashedPassword)
       .query(`
-        INSERT INTO VeritaAudit_Usuarios(nome, cpf, Celular, Email1, Email2, Senha)
+        INSERT INTO Usuarios(nome, cpf, Celular, Email1, Email2, Senha)
         VALUES (@nome, @cpf, @telefone, @email1, @email2, @password)
       `);
 
