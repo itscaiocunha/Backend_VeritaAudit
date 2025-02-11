@@ -7,23 +7,8 @@ dotenv.config(); // Carrega variáveis de ambiente do arquivo .env
 
 const app = express();
 
-// Lista de origens permitidas
-const allowedOrigins = [
-    'http://localhost:5173', // Para ambiente de desenvolvimento
-    'https://verita-audit.vercel.app' // Para o frontend em produção
-];
-
-// Configuração do middleware CORS
-app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true
-}));
+// Configuração do middleware CORS para permitir todas as origens
+app.use(cors()); // CORS desativado, aceita requisições de qualquer origem
 
 // Middleware para interpretar JSON
 app.use(express.json());
@@ -40,11 +25,7 @@ app.use('/api/auth', authRoutes);
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
     console.error('Middleware de erro:', error.message); // Loga o erro no servidor
 
-    if (error.message === 'Not allowed by CORS') {
-        res.status(403).json({ error: 'A origem não é permitida pelo CORS.' });
-    } else {
-        res.status(500).json({ error: 'Erro interno no servidor.' });
-    }
+    res.status(500).json({ error: 'Erro interno no servidor.' });
 });
 
 // Inicia o servidor
