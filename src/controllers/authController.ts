@@ -98,3 +98,61 @@ export const registro = async (req: Request, res: Response): Promise<Response> =
     return res.status(500).json({ message: "Erro no servidor", error: err });
   }
 };
+
+export const infoAdd = async (req: Request, res: Response): Promise<Response> => {
+  const { cep, endereco, bairro, numero, complemento, uf, cidade, cnpj, cpf } = req.body;
+
+  // Validação dos campos obrigatórios
+  if (!cep || !endereco || !bairro || !numero || !uf || !cidade || !cnpj || !cpf) {
+    return res.status(400).json({ message: "Todos os campos são obrigatórios" });
+  }
+
+  try {
+    const pool = await connectDB();
+    console.log("Pool de conexão:", pool ? "Conectado" : "Falha na conexão");
+
+    if (!pool) {
+      return res.status(500).json({ message: "Erro na conexão com o banco de dados" });
+    }
+
+    // Verifica se o usuário existe no banco
+    const result = await pool
+      .request()
+      .input("cpf", cpf)
+      .query("SELECT * FROM Usuarios WHERE cpf = @cpf");
+
+    if (result.recordset.length > 0) {
+      // Usuário encontrado, atualizar informações
+      await pool
+        .request()
+        .input("cep", cep)
+        .input("cnpj", cnpj)
+        .input("endereco", endereco)
+        .input("bairro", bairro)
+        .input("numero", numero)
+        .input("complemento", complemento)
+        .input("uf", uf)
+        .input("cidade", cidade)
+        .input("cpf", cpf)
+        .query(`
+          UPDATE Usuarios 
+          SET CEP = @cep, 
+              VinculoCNPJ = @cnpj, 
+              Rua = @endereco, 
+              Bairro = @bairro, 
+              Numero = @numero, 
+              Complemento = @complemento, 
+              UF = @uf, 
+              Cidade = @cidade 
+          WHERE CPF = @cpf;
+        `);
+
+      return res.status(200).json({ message: "Dados atualizados com sucesso!" });
+    } else {
+      return res.status(404).json({ message: "Usuário não encontrado no banco de dados" });
+    }
+  } catch (err) {
+    console.error("Erro no cadastro:", err);
+    return res.status(500).json({ message: "Erro no servidor", error: err });
+  }
+};

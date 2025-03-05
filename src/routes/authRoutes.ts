@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { login } from '../controllers/authController';
 import { registro } from '../controllers/authController';
+import { infoAdd } from '../controllers/authController';
 
 const router = Router();
 
@@ -24,6 +25,16 @@ router.post('/registro', async (req, res, next) => {
         next(error);
     }
 });
+
+router.post('/info', async (req, res, next) => {
+    console.log("Requisição recebida em /api/auth/info:", req.body);
+    try {
+        await infoAdd(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
 
 
 export default router;
