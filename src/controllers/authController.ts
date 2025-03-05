@@ -25,7 +25,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     const result = await pool
       .request()
       .input("email", email)
-      .query("SELECT id, Email1 AS email, senha FROM Usuarios WHERE Email1 = @email");
+      .query("SELECT id, email1 AS email, senha FROM Usuarios WHERE email1 = @email");
 
     if (!result.recordset.length) {
       return res.status(401).json({ message: "E-mail ou senha inválidos" });
@@ -88,7 +88,7 @@ export const registro = async (req: Request, res: Response): Promise<Response> =
       .input("email2", email2)
       .input("password", hashedPassword)
       .query(`
-        INSERT INTO Usuarios(nome, cpf, Celular, Email1, Email2, Senha)
+        INSERT INTO Usuarios(nome, cpf, celular, email1, email2, senha)
         VALUES (@nome, @cpf, @telefone, @email1, @email2, @password)
       `);
 
@@ -137,14 +137,14 @@ export const infoAdd = async (req: Request, res: Response): Promise<Response> =>
         .query(`
           UPDATE Usuarios 
           SET CEP = @cep, 
-              VinculoCNPJ = @cnpj, 
-              Rua = @endereco, 
-              Bairro = @bairro, 
-              Numero = @numero, 
-              Complemento = @complemento, 
-              UF = @uf, 
-              Cidade = @cidade 
-          WHERE CPF = @cpf;
+              cnpj = @cnpj, 
+              rua = @endereco, 
+              bairro = @bairro, 
+              numero = @numero, 
+              complemento = @complemento, 
+              uf = @uf, 
+              cidade = @cidade 
+          WHERE cpf = @cpf;
         `);
 
       return res.status(200).json({ message: "Dados atualizados com sucesso!" });
