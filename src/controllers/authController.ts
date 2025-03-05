@@ -156,3 +156,51 @@ export const infoAdd = async (req: Request, res: Response): Promise<Response> =>
     return res.status(500).json({ message: "Erro no servidor", error: err });
   }
 };
+
+export const qualificacao = async (req: Request, res: Response): Promise<Response> => {
+  const { profissao, cargo, lattes, cpf } = req.body;
+
+  // Validação dos campos obrigatórios
+  if (!profissao || !cargo || !lattes || !cpf) {
+    return res.status(400).json({ message: "Todos os campos são obrigatórios" });
+  }
+
+  try {
+    const pool = await connectDB();
+    console.log("Pool de conexão:", pool ? "Conectado" : "Falha na conexão");
+
+    if (!pool) {
+      return res.status(500).json({ message: "Erro na conexão com o banco de dados" });
+    }
+
+    // Verifica se o usuário existe no banco
+    const result = await pool
+      .request()
+      .input("cpf", cpf)
+      .query("SELECT * FROM Usuarios WHERE cpf = @cpf");
+
+    if (result.recordset.length > 0) {
+      // Usuário encontrado, atualizar informações
+      await pool
+        .request()
+        .input("profissao", profissao)
+        .input("cargo", cargo)
+        .input("lattes", lattes)
+        .input("cpf", cpf)
+        .query(`
+          UPDATE Usuarios 
+          SET profissao = @profissao, 
+              cargo = @cargo, 
+              lattes = @lattes 
+          WHERE cpf = @cpf;
+        `);
+
+      return res.status(200).json({ message: "Dados atualizados com sucesso!" });
+    } else {
+      return res.status(404).json({ message: "Usuário não encontrado no banco de dados" });
+    }
+  } catch (err) {
+    console.error("Erro no cadastro:", err);
+    return res.status(500).json({ message: "Erro no servidor", error: err });
+  }
+};
