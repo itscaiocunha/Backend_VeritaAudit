@@ -1,27 +1,35 @@
-import sql from "mssql";
-import dotenv from "dotenv";
+import sql from 'mssql';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
-const dbConfig: sql.config = {
-    user: process.env.DB_USER!,
-    password: process.env.DB_PASSWORD!,
-    server: process.env.DB_SERVER!,
-    database: process.env.DB_NAME!,
+const dbConfig = {
+    user: process.env.DB_USER || '',
+    password: process.env.DB_PASSWORD || '',
+    server: process.env.DB_SERVER || '',
+    database: process.env.DB_NAME || '',
     options: {
-        encrypt: true,
+        encrypt: true, 
         trustServerCertificate: true,
     },
 };
 
-// Exportando a função de conexão
-export async function connectDB() {
-    try {
-        const pool = await sql.connect(dbConfig);
-        console.log("Conectado ao banco de dados!");
-        return pool;
-    } catch (err) {
-        console.error("Erro ao conectar ao banco de dados:", err);
-        throw err;
-    }
+if (!dbConfig.user || !dbConfig.password || !dbConfig.server || !dbConfig.database) {
+    throw new Error('Variáveis de ambiente de configuração do banco de dados não estão corretamente definidas!');
 }
+
+let pool: sql.ConnectionPool | null = null;
+
+export const connectDB = async (): Promise<sql.ConnectionPool | null> => {
+    try {
+        if (!pool) {
+            pool = await sql.connect(dbConfig);
+            console.log("✅ Banco de dados conectado com sucesso!");
+        }
+        return pool;
+    } catch (error) {
+        console.error("❌ Erro ao conectar ao banco de dados:", error);
+        pool = null;
+        return null;
+    }
+};

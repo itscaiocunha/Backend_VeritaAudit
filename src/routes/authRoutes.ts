@@ -3,6 +3,7 @@ import { login } from '../controllers/authController';
 import { registro } from '../controllers/authController';
 import { infoAdd } from '../controllers/authController';
 import { qualificacao } from '../controllers/authController';
+import { getStats } from "../controllers/dashboardController";
 
 const router = Router();
 
